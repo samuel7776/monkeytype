@@ -28,7 +28,7 @@ const obj: Config = {
   words: 50,
   time: 30,
   mode: "quote",
-  quoteLength: [0, 1, 2],
+  quoteLength: [0],
   language: "english",
   fontSize: 2,
   freedomMode: false,

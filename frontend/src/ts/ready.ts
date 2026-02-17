@@ -1,6 +1,5 @@
 import * as Misc from "./utils/misc";
 import * as MonkeyPower from "./elements/monkey-power";
-import * as MerchBanner from "./elements/merch-banner";
 import * as ConnectionState from "./states/connection";
 import * as AccountButton from "./elements/account-button";
 //@ts-expect-error no types for this package
@@ -20,7 +19,6 @@ onDOMReady(async () => {
   qs("body")?.setStyle({
     transition: "background .25s, transform .05s",
   });
-  MerchBanner.showIfNotClosedBefore();
 
   const app = document.querySelector("#app") as HTMLElement;
   app?.classList.remove("hidden");
