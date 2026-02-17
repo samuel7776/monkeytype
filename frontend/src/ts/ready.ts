@@ -34,9 +34,7 @@ onDOMReady(async () => {
         qs(".login")?.addClass("hidden");
         qs(".disabledNotification")?.removeClass("hidden");
       }
-      if (!ServerConfiguration.get()?.connections.enabled) {
-        qs(".accountButtonAndMenu .goToFriends")?.addClass("hidden");
-      }
+      // friends link removed from header
     });
   }
   MonkeyPower.init();

@@ -1,15 +1,11 @@
-import { formatDistanceToNowStrict } from "date-fns/formatDistanceToNowStrict";
 import Ape from "../ape";
-import { isAuthenticated } from "../firebase";
 import * as DB from "../db";
 import * as NotificationEvent from "../observables/notification-event";
 import * as BadgeController from "../controllers/badge-controller";
 import * as Notifications from "../elements/notifications";
-import * as ConnectionState from "../states/connection";
 import {
   applyReducedMotion,
   createErrorMessage,
-  escapeHTML,
   promiseAnimate,
 } from "../utils/misc";
 import AnimatedModal from "../utils/animated-modal";
@@ -19,7 +15,7 @@ import * as XPBar from "../elements/xp-bar";
 import * as AuthEvent from "../observables/auth-event";
 import { getActivePage } from "../signals/core";
 import { animate } from "animejs";
-import { qs, qsr } from "../utils/dom";
+import { qsr } from "../utils/dom";
 
 const alertsPopupEl = qsr("#alertsPopup");
 const accountAlertsListEl = alertsPopupEl.qsr(".accountAlerts .list");
@@ -128,136 +124,6 @@ function hide(): void {
   });
 }
 
-async function show(): Promise<void> {
-  void modal.show({
-    beforeAnimation: async () => {
-      if (isAuthenticated()) {
-        alertsPopupEl.qs(".accountAlerts")?.show();
-        alertsPopupEl.qs(".separator.accountSeparator")?.show();
-        accountAlertsListEl.setHtml(`
-          <div class="preloader"><i class="fas fa-fw fa-spin fa-circle-notch"></i></div>`);
-      } else {
-        alertsPopupEl.qs(".accountAlerts")?.hide();
-        alertsPopupEl.qs(".separator.accountSeparator")?.hide();
-      }
-
-      accountAlerts = [];
-      mailToDelete = [];
-      mailToMarkRead = [];
-
-      fillNotifications();
-      fillPSAs();
-    },
-    afterAnimation: async () => {
-      if (isAuthenticated()) {
-        void getAccountAlerts();
-      }
-    },
-  });
-}
-
-async function getAccountAlerts(): Promise<void> {
-  if (!ConnectionState.get()) {
-    accountAlertsListEl.setHtml(`
-    <div class="nothing">
-    You are offline
-    </div>
-    `);
-    return;
-  }
-
-  const inboxResponse = await Ape.users.getInbox();
-
-  if (inboxResponse.status === 503) {
-    accountAlertsListEl.setHtml(`
-    <div class="nothing">
-    Account inboxes are temporarily unavailable
-    </div>
-    `);
-    return;
-  } else if (inboxResponse.status !== 200) {
-    accountAlertsListEl.setHtml(`
-    <div class="nothing">
-    Error getting inbox: ${inboxResponse.body.message} Please try again later
-    </div>
-    `);
-    return;
-  }
-  const inboxData = inboxResponse.body.data;
-
-  accountAlerts = inboxData.inbox;
-
-  // accountAlerts = [
-  //   {
-  //     id: "test-alert-1",
-  //     subject: "Welcome to Monkeytype!",
-  //     body: "Thank you for joining Monkeytype. We hope you enjoy your stay!",
-  //     timestamp: new Date().toISOString(),
-  //     read: false,
-  //     rewards: [{ type: "xp", item: 100 }],
-  //   },
-  // ];
-
-  updateClaimDeleteAllButton();
-
-  if (accountAlerts.length === 0) {
-    accountAlertsListEl.setHtml(`
-    <div class="nothing">
-    Nothing to show
-    </div>
-    `);
-    return;
-  }
-
-  maxMail = inboxData.maxMail;
-
-  updateInboxSize();
-
-  accountAlertsListEl.empty();
-
-  for (const ie of accountAlerts) {
-    if (!ie.read && ie.rewards.length === 0) {
-      mailToMarkRead.push(ie.id);
-    }
-
-    let rewardsString = "";
-
-    if (ie.rewards.length > 0 && !ie.read) {
-      rewardsString = `<div class="rewards">
-        <i class="fas fa-fw fa-gift"></i>
-        <span>${ie.rewards.length}</span>
-      </div>`;
-    }
-
-    accountAlertsListEl.appendHtml(`
-    
-      <div class="item" data-id="${ie.id}">
-        <div class="indicator ${ie.read ? "" : "main"}"></div>
-        <div class="timestamp">${formatDistanceToNowStrict(
-          new Date(ie.timestamp),
-        )} ago</div>
-        <div class="title">${ie.subject}</div>
-        <div class="body">
-          ${ie.body}\n\n${rewardsString}
-        </div>
-        <div class="buttons">
-          ${
-            ie.rewards.length > 0 && !ie.read
-              ? `<button class="markReadAlert textButton" aria-label="Claim" data-balloon-pos="left"><i class="fas fa-gift"></i></button>`
-              : ``
-          }
-          ${
-            (ie.rewards.length > 0 && ie.read) || ie.rewards.length === 0
-              ? `<button class="deleteAlert textButton" aria-label="Delete" data-balloon-pos="left"><i class="fas fa-trash"></i></button>`
-              : ``
-          }
-        </div>
-      </div>
-    
-    `);
-  }
-}
-
 export function addPSA(message: string, level: number): void {
   state.psas.push({
     message,
@@ -265,77 +131,8 @@ export function addPSA(message: string, level: number): void {
   });
 }
 
-function fillPSAs(): void {
-  if (state.psas.length === 0) {
-    psasListEl.setHtml(`<div class="nothing">Nothing to show</div>`);
-  } else {
-    psasListEl.empty();
-
-    for (const p of state.psas) {
-      const { message, level } = p;
-      let levelClass = "";
-      if (level === -1) {
-        levelClass = "error";
-      } else if (level === 1) {
-        levelClass = "main";
-      } else if (level === 0) {
-        levelClass = "sub";
-      }
-      psasListEl.prependHtml(`
-        <div class="item">
-        <div class="indicator ${levelClass}"></div>
-        <div class="body">
-          ${escapeHTML(message)}
-        </div>
-      </div>
-      `);
-    }
-  }
-}
-
-function fillNotifications(): void {
-  if (state.notifications.length === 0) {
-    notificationHistoryListEl.setHtml(
-      `<div class="nothing">Nothing to show</div>`,
-    );
-  } else {
-    notificationHistoryListEl.empty();
-    for (const n of state.notifications) {
-      const { message, level, title } = n;
-
-      let levelClass = "sub";
-      if (level === -1) {
-        levelClass = "error";
-      } else if (level === 1) {
-        levelClass = "main";
-      }
-
-      notificationHistoryListEl.prependHtml(`
-      <div class="item" data-id="${n.id}">
-      <div class="indicator ${levelClass}"></div>
-      <div class="title">${title}</div>
-      <div class="body">
-        ${escapeHTML(message)}
-      </div>
-      <div class="buttons">
-        ${
-          n.details !== undefined
-            ? `<button class="copyNotification textButton" aria-label="Copy details to clipboard" data-balloon-pos="left"><i class="fas fa-fw fa-clipboard"></i></button>`
-            : ``
-        }
-      </div>
-    </div>
-    `);
-    }
-  }
-}
-
-export function setNotificationBubbleVisible(tf: boolean): void {
-  if (tf) {
-    qs("header nav .showAlerts .notificationBubble")?.show();
-  } else {
-    qs("header nav .showAlerts .notificationBubble")?.hide();
-  }
+export function setNotificationBubbleVisible(_tf: boolean): void {
+  // no-op — alerts button removed from header
 }
 
 function updateInboxSize(): void {
@@ -471,9 +268,7 @@ async function copyNotificationToClipboard(target: HTMLElement): Promise<void> {
   }
 }
 
-qs("header nav .showAlerts")?.on("click", () => {
-  void show();
-});
+// .showAlerts button removed from header
 
 NotificationEvent.subscribe((message, level, options) => {
   let title = "Notice";

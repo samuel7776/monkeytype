@@ -1442,41 +1442,6 @@ qs(".pageTest")?.onChild("click", "#restartTestButtonWithSameWordset", () => {
   });
 });
 
-qs(".pageTest")?.onChild("click", "#testConfig .mode .textButton", (e) => {
-  if (TestState.testRestarting) return;
-  if ((e.childTarget as HTMLElement).classList.contains("active")) return;
-  const mode = ((e.childTarget as HTMLElement)?.getAttribute("mode") ??
-    "time") as Mode;
-  if (mode === undefined) return;
-  if (setConfig("mode", mode)) {
-    ManualRestart.set();
-    restart();
-  }
-});
-
-qs(".pageTest")?.onChild("click", "#testConfig .wordCount .textButton", (e) => {
-  if (TestState.testRestarting) return;
-  const wrd = (e.childTarget as HTMLElement)?.getAttribute("wordCount") ?? "15";
-  if (wrd !== "custom") {
-    if (setConfig("words", parseInt(wrd))) {
-      ManualRestart.set();
-      restart();
-    }
-  }
-});
-
-qs(".pageTest")?.onChild("click", "#testConfig .time .textButton", (e) => {
-  if (TestState.testRestarting) return;
-  const mode =
-    (e.childTarget as HTMLElement)?.getAttribute("timeConfig") ?? "10";
-  if (mode !== "custom") {
-    if (setConfig("time", parseInt(mode))) {
-      ManualRestart.set();
-      restart();
-    }
-  }
-});
-
 qs(".pageTest")?.onChild(
   "click",
   "#testConfig .quoteLength .textButton",
@@ -1508,26 +1473,6 @@ qs(".pageTest")?.onChild(
     }
   },
 );
-
-qs(".pageTest")?.onChild(
-  "click",
-  "#testConfig .punctuationMode.textButton",
-  () => {
-    if (TestState.testRestarting) return;
-    if (setConfig("punctuation", !Config.punctuation)) {
-      ManualRestart.set();
-      restart();
-    }
-  },
-);
-
-qs(".pageTest")?.onChild("click", "#testConfig .numbersMode.textButton", () => {
-  if (TestState.testRestarting) return;
-  if (setConfig("numbers", !Config.numbers)) {
-    ManualRestart.set();
-    restart();
-  }
-});
 
 qs("header")?.onChild("click", "nav #startTestButton, #logo", () => {
   if (getActivePage() === "test") restart();

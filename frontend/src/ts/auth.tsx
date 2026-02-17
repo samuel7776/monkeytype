@@ -420,16 +420,6 @@ qs(".pageLogin .login button.signInWithGitHub")?.on("click", () => {
   void signInWithGitHub();
 });
 
-qs("nav .accountButtonAndMenu .menu button.signOut")?.on("click", () => {
-  if (!isAuthAvailable()) {
-    Notifications.add("Authentication uninitialized", -1, {
-      duration: 3,
-    });
-    return;
-  }
-  signOut();
-});
-
 qs(".pageLogin .register form")?.on("submit", (e) => {
   e.preventDefault();
   void signUp();
