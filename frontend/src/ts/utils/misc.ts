@@ -540,7 +540,7 @@ export function updateTitle(title?: string): void {
 
   if (title === undefined || title === "") {
     document.title =
-      local + "Monkeytype | A minimalistic, customizable typing test";
+      local + "BibleType | Learn to type while memorising scripture";
   } else {
     document.title = local + title;
   }

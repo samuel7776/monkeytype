@@ -309,6 +309,11 @@ export async function loadFromLocalStorage(): Promise<void> {
   if (newConfig === undefined) {
     await resetConfig();
   } else {
+    // Force quote mode for BibleType
+    newConfig.mode = "quote";
+    if ((newConfig.quoteLength?.length ?? 0) === 0) {
+      newConfig.quoteLength = [0, 1, 2];
+    }
     await applyConfig(newConfig);
     saveFullConfigToLocalStorage(true);
   }

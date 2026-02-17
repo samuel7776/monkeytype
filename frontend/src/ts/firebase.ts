@@ -96,7 +96,7 @@ export async function init(callback: ReadyCallback): Promise<void> {
 }
 
 export function isAuthenticated(): boolean {
-  return Auth?.currentUser !== undefined && Auth?.currentUser !== null;
+  return false;
 }
 
 /**
@@ -112,7 +112,7 @@ export function getAnalytics(): AnalyticsType {
 }
 
 export function isAuthAvailable(): boolean {
-  return Auth !== undefined;
+  return false;
 }
 
 export async function signOut(): Promise<void> {

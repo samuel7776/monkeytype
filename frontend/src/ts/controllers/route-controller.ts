@@ -1,7 +1,6 @@
 import * as PageController from "./page-controller";
 import * as TestUI from "../test/test-ui";
 import * as PageTransition from "../states/page-transition";
-import { isAuthAvailable, isAuthenticated } from "../firebase";
 import { isFunboxActive } from "../test/funbox/list";
 import * as TestState from "../test/test-state";
 import * as Notifications from "../elements/notifications";
@@ -44,7 +43,6 @@ const route404: Route = {
   },
 };
 
-// NOTE: whenever adding a route add the pathname to the `firebase.json` rewrite rule
 const routes: Route[] = [
   {
     path: "/",
@@ -53,103 +51,9 @@ const routes: Route[] = [
     },
   },
   {
-    path: "/verify",
-    load: async (_params, options) => {
-      await PageController.change("test", options);
-    },
-  },
-  {
-    path: "/leaderboards",
-    load: async (_params, options) => {
-      await PageController.change("leaderboards", options);
-    },
-  },
-  {
-    path: "/about",
-    load: async (_params, options) => {
-      await PageController.change("about", options);
-    },
-  },
-  {
     path: "/settings",
     load: async (_params, options) => {
       await PageController.change("settings", options);
-    },
-  },
-  {
-    path: "/login",
-    load: async (_params, options) => {
-      if (!isAuthAvailable()) {
-        await navigate("/", options);
-        return;
-      }
-      if (isAuthenticated()) {
-        await navigate("/account", options);
-        return;
-      }
-      await PageController.change("login", options);
-    },
-  },
-  {
-    path: "/account",
-    load: async (_params, options) => {
-      if (!isAuthAvailable()) {
-        await navigate("/", options);
-        return;
-      }
-      if (!isAuthenticated()) {
-        await navigate("/login", options);
-        return;
-      }
-      await PageController.change("account", options);
-    },
-  },
-  {
-    path: "/account-settings",
-    load: async (_params, options) => {
-      if (!isAuthAvailable()) {
-        await navigate("/", options);
-        return;
-      }
-      if (!isAuthenticated()) {
-        await navigate("/login", options);
-        return;
-      }
-      await PageController.change("accountSettings", options);
-    },
-  },
-  {
-    path: "/profile",
-    load: async (_params, options) => {
-      await PageController.change("profileSearch", options);
-    },
-  },
-  {
-    path: "/profile/:uidOrName",
-    load: async (params, options) => {
-      await PageController.change("profile", {
-        ...options,
-        force: true,
-        params: {
-          uidOrName: params["uidOrName"] as string,
-        },
-        data: options.data,
-      });
-    },
-  },
-  {
-    path: "/friends",
-    load: async (_params, options) => {
-      if (!isAuthAvailable()) {
-        await navigate("/", options);
-        return;
-      }
-      if (!isAuthenticated()) {
-        await navigate("/login", options);
-        return;
-      }
-
-      await PageController.change("friends", options);
     },
   },
 ];
@@ -181,8 +85,6 @@ export async function navigate(
     Notifications.add("No quit funbox is active. Please finish the test.", 0, {
       important: true,
     });
-    //todo: figure out if this was ever used
-    // event?.preventDefault();
     return;
   }
 

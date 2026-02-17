@@ -2,22 +2,14 @@ import * as Misc from "../utils/misc";
 import * as Strings from "../utils/strings";
 import { getActivePage, setActivePage } from "../signals/core";
 import * as Settings from "../pages/settings";
-import * as Account from "../pages/account";
 import * as PageTest from "../pages/test";
-import * as PageLogin from "../pages/login";
 import * as PageLoading from "../pages/loading";
-import * as PageProfile from "../pages/profile";
-import * as PageProfileSearch from "../pages/profile-search";
-import * as Friends from "../pages/friends";
 import * as Page404 from "../pages/404";
-import * as PageLeaderboards from "../pages/leaderboards";
-import * as PageAccountSettings from "../pages/account-settings";
 import * as PageTransition from "../states/page-transition";
 import * as AdController from "../controllers/ad-controller";
 import * as Focus from "../test/focus";
 import Page, { PageName, LoadingOptions } from "../pages/page";
-import { onDOMReady, qsa, qsr } from "../utils/dom";
-import * as Skeleton from "../utils/skeleton";
+import { qsa } from "../utils/dom";
 
 type ChangeOptions = {
   force?: boolean;
@@ -30,16 +22,8 @@ const pages = {
   loading: PageLoading.page,
   test: PageTest.page,
   settings: Settings.page,
-  about: solidPage("about"),
-  account: Account.page,
-  login: PageLogin.page,
-  profile: PageProfile.page,
-  profileSearch: PageProfileSearch.page,
-  friends: Friends.page,
   404: Page404.page,
-  accountSettings: PageAccountSettings.page,
-  leaderboards: PageLeaderboards.page,
-};
+} as unknown as Record<PageName, Page<unknown>>;
 
 function updateOpenGraphUrl(): void {
   const ogUrlTag = document.querySelector('meta[property="og:url"]');
@@ -63,7 +47,7 @@ function updateTitle(nextPage: { id: string; display?: string }): void {
   } else {
     const titleString =
       nextPage.display ?? Strings.capitalizeFirstLetterOfEachWord(nextPage.id);
-    Misc.updateTitle(`${titleString} | Monkeytype`);
+    Misc.updateTitle(`${titleString} | BibleType`);
   }
 }
 
@@ -267,7 +251,6 @@ export async function change(
   //next page
   await nextPage?.beforeShow({
     params: options.params,
-    // @ts-expect-error for the future (i think)
     data: options.data,
   });
 
@@ -293,21 +276,4 @@ export async function change(
   PageTransition.set(false);
   void AdController.reinstate();
   return true;
-}
-
-function solidPage(id: PageName, props?: { path?: string }): Page<undefined> {
-  const path = props?.path ?? `/${id}`;
-  const internalId = `page${Strings.capitalizeFirstLetter(id)}`;
-  onDOMReady(() => Skeleton.save(internalId));
-  return new Page({
-    id,
-    path,
-    element: qsr(`#${internalId}`),
-    beforeShow: async () => {
-      Skeleton.append(internalId, "main");
-    },
-    afterHide: async () => {
-      Skeleton.remove(internalId);
-    },
-  });
 }

@@ -102,8 +102,8 @@ function getPlugins({
       injectRegister: null,
       registerType: "autoUpdate",
       manifest: {
-        short_name: "Monkeytype",
-        name: "Monkeytype",
+        short_name: "BibleType",
+        name: "BibleType",
         start_url: "/",
         icons: [
           {
@@ -198,11 +198,7 @@ function getBuildOptions({
     assetsInlineLimit: 0, //dont inline small files as data
     rollupOptions: {
       input: {
-        monkeytype: path.resolve(__dirname, "src/index.html"),
-        email: path.resolve(__dirname, "src/email-handler.html"),
-        privacy: path.resolve(__dirname, "src/privacy-policy.html"),
-        security: path.resolve(__dirname, "src/security-policy.html"),
-        terms: path.resolve(__dirname, "src/terms-of-service.html"),
+        bibletype: path.resolve(__dirname, "src/index.html"),
         404: path.resolve(__dirname, "src/404.html"),
       },
       output: {
