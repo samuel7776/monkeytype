@@ -2,7 +2,6 @@ import { contract } from "@monkeytype/contracts/index";
 import psas from "./psas";
 import publicStats from "./public";
 import users from "./users";
-import { join } from "path";
 import quotes from "./quotes";
 import results from "./results";
 import presets from "./presets";
@@ -10,7 +9,6 @@ import apeKeys from "./ape-keys";
 import admin from "./admin";
 import docs from "./docs";
 import webhooks from "./webhooks";
-import dev from "./dev";
 import configs from "./configs";
 import configuration from "./configuration";
 import { version } from "../../version";
@@ -18,15 +16,7 @@ import leaderboards from "./leaderboards";
 import connections from "./connections";
 import addSwaggerMiddlewares from "./swagger";
 import { MonkeyResponse } from "../../utils/monkey-response";
-import {
-  Application,
-  IRouter,
-  NextFunction,
-  Response,
-  static as expressStatic,
-} from "express";
-import { isDevEnvironment } from "../../utils/misc";
-import { getLiveConfiguration } from "../../init/configuration";
+import { Application, IRouter, NextFunction, Response } from "express";
 import Logger from "../../utils/logger";
 import { createExpressEndpoints, initServer } from "@ts-rest/express";
 import { ZodIssue } from "zod";
@@ -56,7 +46,6 @@ const router = s.router(contract, {
   leaderboards,
   results,
   configuration,
-  dev,
   users,
   quotes,
   webhooks,
@@ -64,7 +53,6 @@ const router = s.router(contract, {
 });
 
 export function addApiRoutes(app: Application): void {
-  applyDevApiRoutes(app);
   applyApiRoutes(app);
   applyTsRestApiRoutes(app);
 
@@ -128,28 +116,6 @@ function prettyErrorMessage(issue: ZodIssue | undefined): string {
   if (issue === undefined) return "";
   const path = issue.path.length > 0 ? `"${issue.path.join(".")}" ` : "";
   return `${path}${issue.message}`;
-}
-
-function applyDevApiRoutes(app: Application): void {
-  if (isDevEnvironment()) {
-    //disable csp to allow assets to load from unsecured http
-    app.use((req, res, next) => {
-      res.setHeader("Content-Security-Policy", "");
-      next();
-    });
-    app.use("/configure", expressStatic(join(__dirname, "../../../private")));
-
-    app.use(async (req, res, next) => {
-      const slowdown = (await getLiveConfiguration()).dev.responseSlowdownMs;
-      if (slowdown > 0) {
-        Logger.info(
-          `Simulating ${slowdown}ms delay for ${req.method} ${req.path}`,
-        );
-        await new Promise((resolve) => setTimeout(resolve, slowdown));
-      }
-      next();
-    });
-  }
 }
 
 function applyApiRoutes(app: Application): void {

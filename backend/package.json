@@ -11,9 +11,6 @@
     "clean": "tsc --build --clean",
     "ts-check": "tsc --noEmit",
     "start": "node ./dist/server.js",
-    "test": "vitest run --project=unit",
-    "integration-test": "vitest run --project=integration --project=integration-isolated",
-    "test-coverage": "vitest run --coverage",
     "dev": "concurrently -p none \"tsx watch --clear-screen=false --inspect ./src/server.ts\" \"tsc --preserveWatchOutput --noEmit --watch\"  \"esw src/ -w --ext .ts --cache --color\"",
     "docker-db-only": "docker compose -f docker/compose.db-only.yml up",
     "docker": "docker compose -f docker/compose.yml up",
@@ -73,21 +70,16 @@
     "@types/object-hash": "3.0.6",
     "@types/readline-sync": "1.4.8",
     "@types/string-similarity": "4.0.2",
-    "@types/supertest": "6.0.3",
     "@types/swagger-stats": "0.95.11",
     "@types/ua-parser-js": "0.7.36",
     "@types/uuid": "10.0.0",
-    "@vitest/coverage-v8": "4.0.15",
     "concurrently": "8.2.2",
     "openapi3-ts": "2.0.2",
     "oxlint": "1.43.0",
     "oxlint-tsgolint": "0.11.4",
     "readline-sync": "1.4.10",
-    "supertest": "7.1.4",
-    "testcontainers": "11.11.0",
     "tsx": "4.16.2",
-    "typescript": "5.9.3",
-    "vitest": "4.0.15"
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": "24.11.0 || 22.21.0"

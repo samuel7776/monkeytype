@@ -11,7 +11,6 @@
   "scripts": {
     "dev": "tsup-node --watch",
     "build": "npm run madge && tsup-node",
-    "test": "vitest run",
     "madge": " madge --circular --extensions ts ./src",
     "ts-check": "tsc --noEmit",
     "lint": "oxlint . --type-aware --type-check",
@@ -28,7 +27,6 @@
     "oxlint": "1.43.0",
     "oxlint-tsgolint": "0.11.4",
     "tsup": "8.4.0",
-    "typescript": "5.9.3",
-    "vitest": "4.0.15"
+    "typescript": "5.9.3"
   }
 }

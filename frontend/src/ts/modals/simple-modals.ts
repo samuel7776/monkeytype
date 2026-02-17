@@ -35,7 +35,6 @@ import {
   TextInput,
 } from "../utils/simple-modal";
 
-import { GenerateDataRequest } from "@monkeytype/contracts/dev";
 import {
   PasswordSchema,
   UserEmailSchema,
@@ -1139,101 +1138,6 @@ list.deleteCustomTheme = new SimpleModal({
     return {
       status: 1,
       message: "Custom theme deleted",
-    };
-  },
-});
-
-list.devGenerateData = new SimpleModal({
-  id: "devGenerateData",
-  title: "Generate data",
-  showLabels: true,
-  inputs: [
-    {
-      type: "text",
-      label: "username",
-      placeholder: "username",
-      oninput: (event): void => {
-        const target = event.target as HTMLInputElement;
-        const span = document.querySelector(
-          "#devGenerateData_1 + span",
-        ) as HTMLInputElement;
-        span.innerText = `if checked, user will be created with ${target.value}@example.com and password: password`;
-        return;
-      },
-      validation: {
-        schema: UserNameSchema,
-      },
-    },
-    {
-      type: "checkbox",
-      label: "create user",
-      description:
-        "if checked, user will be created with {username}@example.com and password: password",
-      optional: true,
-    },
-    {
-      type: "date",
-      label: "first test",
-      optional: true,
-    },
-    {
-      type: "date",
-      label: "last test",
-      max: new Date(),
-      optional: true,
-    },
-    {
-      type: "range",
-      label: "min tests per day",
-      initVal: 0,
-      min: 0,
-      max: 200,
-      step: 10,
-    },
-    {
-      type: "range",
-      label: "max tests per day",
-      initVal: 50,
-      min: 0,
-      max: 200,
-      step: 10,
-    },
-  ],
-  buttonText: "generate (might take a while)",
-  execFn: async (
-    _thisPopup,
-    username,
-    createUser,
-    firstTestTimestamp,
-    lastTestTimestamp,
-    minTestsPerDay,
-    maxTestsPerDay,
-  ): Promise<ExecReturn> => {
-    const request: GenerateDataRequest = {
-      username,
-      createUser: createUser === "true",
-    };
-    if (firstTestTimestamp !== undefined && firstTestTimestamp.length > 0) {
-      request.firstTestTimestamp = Date.parse(firstTestTimestamp);
-    }
-    if (lastTestTimestamp !== undefined && lastTestTimestamp.length > 0) {
-      request.lastTestTimestamp = Date.parse(lastTestTimestamp);
-    }
-    if (minTestsPerDay !== undefined && minTestsPerDay.length > 0) {
-      request.minTestsPerDay = Number.parseInt(minTestsPerDay);
-    }
-    if (maxTestsPerDay !== undefined && maxTestsPerDay.length > 0) {
-      request.maxTestsPerDay = Number.parseInt(maxTestsPerDay);
-    }
-
-    const result = await Ape.dev.generateData({ body: request });
-
-    return {
-      status: result.status === 200 ? 1 : -1,
-      message: result.body.message,
-      hideOptions: {
-        clearModalChain: true,
-      },
     };
   },
 });

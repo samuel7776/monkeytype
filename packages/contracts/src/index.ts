@@ -8,7 +8,6 @@ import { publicContract } from "./public";
 import { leaderboardsContract } from "./leaderboards";
 import { resultsContract } from "./results";
 import { configurationContract } from "./configuration";
-import { devContract } from "./dev";
 import { usersContract } from "./users";
 import { quotesContract } from "./quotes";
 import { webhooksContract } from "./webhooks";
@@ -26,7 +25,6 @@ export const contract = c.router({
   leaderboards: leaderboardsContract,
   results: resultsContract,
   configuration: configurationContract,
-  dev: devContract,
   users: usersContract,
   quotes: quotesContract,
   webhooks: webhooksContract,

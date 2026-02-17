@@ -31,9 +31,8 @@ import "./elements/no-css";
 import { egVideoListener } from "./popups/video-ad-popup";
 import "./states/connection";
 import "./test/tts";
-import { isDevEnvironment, addToGlobal } from "./utils/misc";
+import { addToGlobal } from "./utils/misc";
 import * as Focus from "./test/focus";
-import { getDevOptionsModal } from "./utils/async-modules";
 import * as Sentry from "./sentry";
 import * as Cookies from "./cookies";
 import "./elements/psa";
@@ -93,11 +92,5 @@ addToGlobal({
   qsa: qsa,
   qsr: qsr,
 });
-
-if (isDevEnvironment()) {
-  void getDevOptionsModal().then((module) => {
-    module.appendButton();
-  });
-}
 
 mountComponents();

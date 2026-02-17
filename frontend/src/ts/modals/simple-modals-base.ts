@@ -24,7 +24,6 @@ export type PopupKey =
   | "resetProgressCustomTextLong"
   | "updateCustomTheme"
   | "deleteCustomTheme"
-  | "devGenerateData"
   | "lbGoToPage";
 
 export const list: Record<PopupKey, SimpleModal | undefined> = {
@@ -49,7 +48,6 @@ export const list: Record<PopupKey, SimpleModal | undefined> = {
   resetProgressCustomTextLong: undefined,
   updateCustomTheme: undefined,
   deleteCustomTheme: undefined,
-  devGenerateData: undefined,
   lbGoToPage: undefined,
 };
 

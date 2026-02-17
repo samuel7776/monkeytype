@@ -15,9 +15,6 @@
     "madge": " madge --circular --extensions ts ./src",
     "start": "vite preview --port 3000",
     "dev": "vite dev",
-    "test": "vitest run",
-    "test-coverage": "vitest run --coverage",
-    "dev-test": "concurrently --kill-others \"vite dev\" \"vitest\"",
     "tsc": "tsc",
     "docker": "docker compose -f docker/compose.dev.yml up"
   },
@@ -66,12 +63,8 @@
     "@fortawesome/fontawesome-free": "5.15.4",
     "@monkeytype/oxlint-config": "workspace:*",
     "@monkeytype/typescript-config": "workspace:*",
-    "@solidjs/testing-library": "0.8.10",
     "@tailwindcss/vite": "4.1.18",
     "@tanstack/eslint-plugin-query": "5.91.4",
-    "@testing-library/dom": "10.4.1",
-    "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/user-event": "14.6.1",
     "@types/canvas-confetti": "1.4.3",
     "@types/chartjs-plugin-trendline": "1.0.1",
     "@types/damerau-levenshtein": "1.0.0",
@@ -80,7 +73,6 @@
     "@types/object-hash": "3.0.6",
     "@types/subset-font": "1.4.3",
     "@types/throttle-debounce": "5.0.2",
-    "@vitest/coverage-v8": "4.0.15",
     "autoprefixer": "10.4.20",
     "concurrently": "8.2.2",
     "eslint": "9.39.1",
@@ -88,8 +80,6 @@
     "eslint-plugin-solid": "0.14.5",
     "firebase-tools": "13.15.1",
     "fontawesome-subset": "4.4.0",
-    "happy-dom": "20.0.10",
-    "jsdom": "27.4.0",
     "madge": "8.0.0",
     "magic-string": "0.30.17",
     "normalize.css": "8.0.1",
@@ -110,8 +100,7 @@
     "vite-plugin-inspect": "11.3.3",
     "vite-plugin-minify": "2.1.0",
     "vite-plugin-pwa": "1.1.0",
-    "vite-plugin-solid": "2.11.10",
-    "vitest": "4.0.15"
+    "vite-plugin-solid": "2.11.10"
   },
   "lint-staged": {
     "*": [

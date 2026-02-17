@@ -653,9 +653,6 @@ body.darkMode {
       opacity: 1;
     }
   }
-  & [data-popup-id="devGenerateData"] {
-    max-width: 700px;
-  }
 }
 
 #mobileTestConfigModal {
@@ -774,12 +771,6 @@ body.darkMode {
         font-size: 2em;
       }
     }
-  }
-}
-
-#devOptionsModal {
-  .modal {
-    max-width: 400px;
   }
 }
 
