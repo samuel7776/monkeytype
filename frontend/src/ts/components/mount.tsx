@@ -9,10 +9,8 @@ import { DevTools } from "./core/DevTools";
 import { Theme } from "./core/Theme";
 import { Footer } from "./layout/footer/Footer";
 import { Overlays } from "./layout/overlays/Overlays";
-import { Modals } from "./modals/Modals";
 const components: Record<string, () => JSXElement> = {
   footer: () => <Footer />,
-  modals: () => <Modals />,
   overlays: () => <Overlays />,
   theme: () => <Theme />,
   devtools: () => <DevTools />,

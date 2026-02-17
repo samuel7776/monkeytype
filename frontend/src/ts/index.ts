@@ -33,7 +33,6 @@ import "./states/connection";
 import "./test/tts";
 import { isDevEnvironment, addToGlobal } from "./utils/misc";
 import * as Focus from "./test/focus";
-import { fetchLatestVersion } from "./utils/version";
 import { getDevOptionsModal } from "./utils/async-modules";
 import * as Sentry from "./sentry";
 import * as Cookies from "./cookies";
@@ -66,7 +65,6 @@ Object.defineProperty(window, "Math", {
 
 applyEngineSettings();
 void loadFromLocalStorage();
-void fetchLatestVersion();
 Focus.set(true, true);
 const accepted = Cookies.getAcceptedCookies();
 if (accepted === null) {

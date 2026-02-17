@@ -4,7 +4,6 @@ import { getFocus, getIsScreenshotting } from "../../../signals/core";
 import { cn } from "../../../utils/cn";
 
 import { ThemeIndicator } from "./ThemeIndicator";
-import { VersionButton } from "./VersionButton";
 
 export function Footer(): JSXElement {
   return (
@@ -26,7 +25,6 @@ export function Footer(): JSXElement {
         </div>
         <div class="flex flex-col items-end text-right lg:flex-row">
           <ThemeIndicator />
-          <VersionButton />
         </div>
       </div>
     </footer>
