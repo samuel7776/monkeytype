@@ -64,7 +64,6 @@ export const commands: CommandsSubgroup = {
       "time",
       "words",
       "quoteLength",
-      "language",
     ),
     {
       id: "changeCustomModeText",

@@ -1,7 +1,6 @@
 import * as ConfigSchemas from "@monkeytype/schemas/configs";
 import * as SoundController from "../controllers/sound-controller";
 import * as TestLogic from "../test/test-logic";
-import { getLanguageDisplayString } from "../utils/strings";
 import * as ModesNotice from "../elements/modes-notice";
 import { isAuthenticated } from "../firebase";
 import * as ManualRestart from "../test/manual-restart-tracker";
@@ -32,7 +31,8 @@ type SkippedConfigKeys =
   | "minBurst" //this is skipped for now because it has 2 nested inputs;
   | "customBackgroundFilter" //this is skipped for now because it has 4 nested inputs;
   | "theme" //themes are sorted by color and also affected by config.favThemes
-  | "funbox"; //is using a special non schema command at the top to clear funboxes
+  | "funbox" //is using a special non schema command at the top to clear funboxes
+  | "language"; //language selector removed
 
 export type CommandlineConfigMetadataObject = {
   [K in keyof Omit<
@@ -178,14 +178,6 @@ export const commandlineConfigMetadata: CommandlineConfigMetadataObject = {
       },
       afterExec: () => {
         TestLogic.restart();
-      },
-    },
-  },
-  language: {
-    subgroup: {
-      options: "fromSchema",
-      display: (value) => {
-        return getLanguageDisplayString(value);
       },
     },
   },

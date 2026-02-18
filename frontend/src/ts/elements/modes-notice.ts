@@ -104,15 +104,6 @@ export async function update(): Promise<void> {
 
   const usingPolyglot = getActiveFunboxNames().includes("polyglot");
 
-  if (Config.mode !== "zen" && !usingPolyglot) {
-    testModesNotice.appendHtml(
-      `<button class="textButton" commands="language"><i class="fas fa-globe-americas"></i>${getLanguageDisplayString(
-        Config.language,
-        Config.mode === "quote",
-      )}</button>`,
-    );
-  }
-
   if (usingPolyglot) {
     const languages = Config.customPolyglot
       .map((lang) => {
