@@ -973,11 +973,6 @@ export async function update(
   qs("#words")?.removeClass("blurred");
   blurInputElement();
   qs("#result .stats .time .bottom .afk")?.setText("");
-  if (isAuthenticated()) {
-    qs("#result .loginTip")?.hide();
-  } else {
-    qs("#result .loginTip")?.show();
-  }
   if (Config.ads === "off" || Config.ads === "result") {
     qs("#result #watchVideoAdButton")?.hide();
   } else {
@@ -1036,7 +1031,6 @@ export async function update(
     qs("main #result .chart")?.hide();
     qs("main #result #resultWordsHistory")?.hide();
     qs("main #result #resultReplay")?.hide();
-    qs("main #result .loginTip")?.hide();
     qs("main #result #showWordHistoryButton")?.hide();
     qs("main #result #watchReplayButton")?.hide();
     qs("main #result #saveScreenshotButton")?.hide();
@@ -1048,7 +1042,6 @@ export async function update(
     qsa("main #result .stats")?.show();
     qs("main #result .chart")?.show();
     if (!isAuthenticated()) {
-      qs("main #result .loginTip")?.show();
       qs("main #result #rateQuoteButton")?.hide();
       qs("main #result #reportQuoteButton")?.hide();
     } else {

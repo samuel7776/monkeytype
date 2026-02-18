@@ -1,7 +1,6 @@
 import { showLoaderBar, hideLoaderBar } from "../signals/loader-bar";
 import * as Replay from "./replay";
 import * as Misc from "../utils/misc";
-import { isAuthenticated } from "../firebase";
 import { getActiveFunboxesWithFunction } from "./funbox/list";
 import * as DB from "../db";
 import { format } from "date-fns/format";
@@ -35,9 +34,6 @@ function revert(): void {
   qsa(".highlightContainer")?.show();
   if (revertCookie) qs("#cookiesModal")?.show();
   if (revealReplay) qs("#resultReplay")?.show();
-  if (!isAuthenticated()) {
-    qs(".pageTest .loginTip")?.removeClass("hidden");
-  }
   qs("html")?.setStyle({ scrollBehavior: "smooth" });
   for (const fb of getActiveFunboxesWithFunction("applyGlobalCSS")) {
     fb.functions.applyGlobalCSS();
@@ -88,7 +84,6 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
   setIsScreenshotting(true);
   qs(".pageTest .buttons")?.hide();
   qs("#notificationCenter")?.hide();
-  qs(".pageTest .loginTip")?.hide();
   qs("noscript")?.hide();
   qs("#nocss")?.hide();
   qs("#ad-result-wrapper")?.hide();
