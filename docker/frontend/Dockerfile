@@ -15,7 +15,8 @@ COPY docker/frontend/firebase-config-live.ts frontend/src/ts/constants/firebase-
 #gimme pnpm + build
 RUN npm i -g pnpm && \
     pnpm i --frozen-lockfile && \
-    npm run build
+    npx turbo run build --filter=@monkeytype/frontend^... && \
+    cd frontend && npx vite build
 
 # COPY to target
 FROM nginx:mainline-alpine
