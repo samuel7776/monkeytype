@@ -63,7 +63,7 @@ jobs:
         run: exit 1
 
       - name: Check Workflow Changes
-        if: steps.filter.outputs.workflows == 'true' && !contains(github.event.pull_request.labels.*.name, 'force-ci') && !contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+        if: github.event_name == 'pull_request' && steps.filter.outputs.workflows == 'true' && !contains(github.event.pull_request.labels.*.name, 'force-ci') && !contains(github.event.pull_request.labels.*.name, 'force-full-ci')
         run: exit 1
 
       - name: Export changes
