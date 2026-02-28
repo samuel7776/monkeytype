@@ -7,6 +7,23 @@
         <button class="textButton" quotelength="2">long</button>
       </div>
     </div>
+    <div class="row">
+      <div class="bibleBookSelector">
+        <button class="textButton" id="bibleBookButton">
+          <i class="fas fa-bible"></i>
+          <span class="bookName">All Books</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="bibleBookDropdown" class="hidden">
+    <input
+      type="text"
+      id="bibleBookSearch"
+      placeholder="Search books..."
+      autocomplete="off"
+    />
+    <div class="bookList"></div>
   </div>
 
   <div id="mobileTestConfigButton">

@@ -1,10 +1,8 @@
-import Config, { setConfig, setQuoteLengthAll, toggleFunbox } from "../config";
+import Config, { toggleFunbox } from "../config";
 import * as CustomText from "./custom-text";
 import { Wordset, FunboxWordsFrequency, withWords } from "./wordset";
-import QuotesController, {
-  Quote,
-  QuoteWithTextSplit,
-} from "../controllers/quotes-controller";
+import { QuoteWithTextSplit } from "../controllers/quotes-controller";
+import * as BibleController from "../controllers/bible-controller";
 import * as TestWords from "./test-words";
 import * as BritishEnglish from "./british-english";
 import * as LazyMode from "./lazy-mode";
@@ -493,8 +491,7 @@ export function getLimit(): number {
   return limit;
 }
 
-async function getQuoteWordList(
-  language: LanguageObject,
+async function getBibleWordList(
   wordOrder?: FunboxWordOrder,
 ): Promise<string[]> {
   if (TestState.isRepeated) {
@@ -504,91 +501,40 @@ async function getQuoteWordList(
 
     TestWords.setCurrentQuote(previousRandomQuote);
 
-    // need to re-reverse the words if the test is repeated
-    // because it will be reversed again in the generateWords function
     if (wordOrder === "reverse") {
       return currentWordset.words.reverse();
     } else {
       return currentWordset.words;
     }
   }
-  const languageToGet = language.name.startsWith("swiss_german")
-    ? "german"
-    : language.name;
 
   showLoaderBar();
-  const quotesCollection = await QuotesController.getQuotes(
-    languageToGet,
+  const passageText = await BibleController.getRandomPassage(
     Config.quoteLength,
   );
   hideLoaderBar();
 
-  if (quotesCollection.length === 0) {
-    setConfig("mode", "words");
-    throw new WordGenError(
-      `No ${Config.language
-        .replace(/_\d*k$/g, "")
-        .replace(/_/g, " ")} quotes found`,
-    );
-  }
+  let text = passageText.replace(/ +/gm, " ");
+  text = text.replace(/( *(\r\n|\r|\n) *)/g, "\n ");
+  text = text.replace(/…/g, "...");
+  text = text.replace(/\[/g, "").replace(/\]/g, "");
+  text = text.trim();
 
-  let rq: Quote;
-  if (Config.quoteLength.includes(-2) && Config.quoteLength.length === 1) {
-    const targetQuote = QuotesController.getQuoteById(
-      TestState.selectedQuoteId,
-    );
-    if (targetQuote === undefined) {
-      setQuoteLengthAll();
-      throw new WordGenError(
-        `Quote ${TestState.selectedQuoteId} does not exist`,
-      );
-    }
-    rq = targetQuote;
-  } else if (Config.quoteLength.includes(-3)) {
-    const randomQuote = QuotesController.getRandomFavoriteQuote(
-      Config.language,
-    );
-    if (randomQuote === null) {
-      setQuoteLengthAll();
-      throw new WordGenError("No favorite quotes found");
-    }
-    rq = randomQuote;
-  } else {
-    const randomQuote = QuotesController.getRandomQuote();
-    if (randomQuote === null) {
-      setQuoteLengthAll();
-      throw new WordGenError("No quotes found for selected quote length");
-    }
-    rq = randomQuote;
-  }
+  const textSplit = text.split(" ");
 
-  rq.language = Strings.removeLanguageSize(Config.language);
-  rq.text = rq.text.replace(/ +/gm, " ");
-  rq.text = rq.text.replace(/( *(\r\n|\r|\n) *)/g, "\n ");
-  rq.text = rq.text.replace(/…/g, "...");
-  rq.text = rq.text.trim();
+  const rq: QuoteWithTextSplit = {
+    text,
+    source: `KJV - ${BibleController.getSelectedBookDisplayName()}`,
+    length: text.length,
+    id: Math.floor(Math.random() * 100000),
+    language: "english",
+    group: 0,
+    textSplit,
+  };
 
-  if (
-    rq.britishText !== undefined &&
-    rq.britishText !== "" &&
-    Config.britishEnglish
-  ) {
-    rq.textSplit = rq.britishText.split(" ");
-  } else {
-    rq.textSplit = rq.text.split(" ");
-  }
+  TestWords.setCurrentQuote(rq);
 
-  TestWords.setCurrentQuote(rq as QuoteWithTextSplit);
-
-  if (TestWords.currentQuote === null) {
-    throw new WordGenError("Random quote is null");
-  }
-
-  if (TestWords.currentQuote.textSplit === undefined) {
-    throw new WordGenError("Random quote textSplit is undefined");
-  }
-
-  return TestWords.currentQuote.textSplit;
+  return textSplit;
 }
 
 let currentWordset: Wordset | null = null;
@@ -636,7 +582,7 @@ export async function generateWords(
   if (Config.mode === "custom") {
     wordList = CustomText.getText();
   } else if (Config.mode === "quote") {
-    wordList = await getQuoteWordList(language, wordOrder);
+    wordList = await getBibleWordList(wordOrder);
   } else if (Config.mode === "zen") {
     wordList = [];
   }
