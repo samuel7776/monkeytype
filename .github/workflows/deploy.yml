@@ -1,0 +1,22 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Monkey CI"]
+    types: [completed]
+    branches: [master]
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success'
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_SSH_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd ~/bibletype/monkeytype && git pull && cd docker && docker compose up -d --build
