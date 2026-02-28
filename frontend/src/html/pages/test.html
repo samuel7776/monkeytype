@@ -14,6 +14,12 @@
           <span class="bookName">All Books</span>
         </button>
       </div>
+      <div class="bibleThemeSelector">
+        <button class="textButton" id="bibleThemeButton">
+          <i class="fas fa-tag"></i>
+          <span class="themeName">All Themes</span>
+        </button>
+      </div>
     </div>
   </div>
   <div id="bibleBookDropdown" class="hidden">
@@ -24,6 +30,15 @@
       autocomplete="off"
     />
     <div class="bookList"></div>
+  </div>
+  <div id="bibleThemeDropdown" class="hidden">
+    <input
+      type="text"
+      id="bibleThemeSearch"
+      placeholder="Search themes..."
+      autocomplete="off"
+    />
+    <div class="themeList"></div>
   </div>
 
   <div id="mobileTestConfigButton">

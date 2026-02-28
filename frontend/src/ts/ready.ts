@@ -10,6 +10,7 @@ import { authPromise } from "./firebase";
 import { animate } from "animejs";
 import { onDOMReady, qs } from "./utils/dom";
 import * as BibleBookSelector from "./elements/bible-book-selector";
+import * as BibleThemeSelector from "./elements/bible-theme-selector";
 
 onDOMReady(async () => {
   await configLoadPromise;
@@ -40,6 +41,7 @@ onDOMReady(async () => {
   }
   MonkeyPower.init();
   void BibleBookSelector.init();
+  void BibleThemeSelector.init();
 
   // untyped, need to ignore
   // oxlint-disable-next-line no-unsafe-call
