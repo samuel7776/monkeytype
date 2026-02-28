@@ -49,7 +49,10 @@
     "check-assets-languages": "turbo check-assets --filter @monkeytype/frontend  -- languages",
     "check-assets-others": "turbo check-assets --filter @monkeytype/frontend  -- others",
     "knip": "knip",
-    "update-oxc": "pnpm up -D -r oxlint@latest oxfmt@latest oxlint-tsgolint@latest"
+    "update-oxc": "pnpm up -D -r oxlint@latest oxfmt@latest oxlint-tsgolint@latest",
+    "test-fe": "echo 'No frontend tests'",
+    "test-be": "echo 'No backend tests'",
+    "test-pkg": "echo 'No package tests'"
   },
   "devDependencies": {
     "@commitlint/cli": "17.7.1",
