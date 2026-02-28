@@ -46,7 +46,15 @@ let selectedBook: string = selectedBookLS.get() ?? "all";
 let selectedTheme: string = selectedThemeLS.get() ?? "all";
 let booksCache: BibleBook[] | null = null;
 let themesCache: ThemeIndex | null = null;
-let currentVerseQueue: string[] = [];
+export type BiblePassage = {
+  text: string;
+  book: string;
+  chapter: string;
+  verseStart: number;
+  verseEnd: number;
+};
+
+let currentVerseQueue: BiblePassage[] = [];
 let queueIndex = 0;
 
 export function getSelectedBook(): string {
@@ -116,8 +124,8 @@ function filterVersesByTheme(
 function generateAllPassages(
   data: BibleBookData,
   themeVerseFilter: Record<string, Set<number>> | null,
-): string[] {
-  const texts: string[] = [];
+): BiblePassage[] {
+  const passages: BiblePassage[] = [];
 
   for (const chapter of Object.keys(data.chapters)) {
     let verses = data.chapters[chapter] as BibleVerse[];
@@ -138,23 +146,29 @@ function generateAllPassages(
         const chunk = verses.slice(i, i + chunkSize);
         const text = buildQuoteText(chunk);
         if (text.length > 10) {
-          texts.push(text);
+          passages.push({
+            text,
+            book: data.name,
+            chapter,
+            verseStart: chunk[0]?.v ?? 0,
+            verseEnd: chunk[chunk.length - 1]?.v ?? 0,
+          });
         }
       }
     }
   }
 
-  return texts;
+  return passages;
 }
 
 function filterByQuoteLength(
-  passages: string[],
+  passages: BiblePassage[],
   quoteLengths: number[],
-): string[] {
+): BiblePassage[] {
   if (quoteLengths.length === 0) return passages;
 
-  return passages.filter((text) => {
-    const len = text.length;
+  return passages.filter((p) => {
+    const len = p.text.length;
     return quoteLengths.some((ql) => {
       const group = LENGTH_GROUPS[ql];
       if (group === undefined) return false;
@@ -193,14 +207,14 @@ function getBooksForTheme(): string[] | null {
 async function loadPassagesFromBook(
   bookSlug: string,
   quoteLengths: number[],
-): Promise<string[]> {
+): Promise<BiblePassage[]> {
   const data = await cachedFetchJson<BibleBookData>(`bible/${bookSlug}.json`);
   const themeFilter = getThemeVerseFilter(bookSlug);
   const all = generateAllPassages(data, themeFilter);
   return filterByQuoteLength(all, quoteLengths);
 }
 
-async function loadPassages(quoteLengths: number[]): Promise<string[]> {
+async function loadPassages(quoteLengths: number[]): Promise<BiblePassage[]> {
   const themedBooks = getBooksForTheme();
 
   // Determine which book slugs to try
@@ -240,7 +254,7 @@ async function loadPassages(quoteLengths: number[]): Promise<string[]> {
 
 export async function getRandomPassage(
   quoteLengths: number[],
-): Promise<string> {
+): Promise<BiblePassage> {
   // Ensure themes are loaded
   await getThemes();
 
@@ -253,7 +267,7 @@ export async function getRandomPassage(
     queueIndex = 0;
   }
 
-  const passage = currentVerseQueue[queueIndex] as string;
+  const passage = currentVerseQueue[queueIndex] as BiblePassage;
   queueIndex++;
   return passage;
 }

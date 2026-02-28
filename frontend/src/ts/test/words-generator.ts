@@ -509,12 +509,10 @@ async function getBibleWordList(
   }
 
   showLoaderBar();
-  const passageText = await BibleController.getRandomPassage(
-    Config.quoteLength,
-  );
+  const passage = await BibleController.getRandomPassage(Config.quoteLength);
   hideLoaderBar();
 
-  let text = passageText.replace(/ +/gm, " ");
+  let text = passage.text.replace(/ +/gm, " ");
   text = text.replace(/( *(\r\n|\r|\n) *)/g, "\n ");
   text = text.replace(/…/g, "...");
   text = text.replace(/\[/g, "").replace(/\]/g, "");
@@ -522,9 +520,14 @@ async function getBibleWordList(
 
   const textSplit = text.split(" ");
 
+  const verseRef =
+    passage.verseStart === passage.verseEnd
+      ? `${passage.chapter}:${passage.verseStart}`
+      : `${passage.chapter}:${passage.verseStart}-${passage.verseEnd}`;
+
   const rq: QuoteWithTextSplit = {
     text,
-    source: `KJV - ${BibleController.getSelectedBookDisplayName()}`,
+    source: `${passage.book} ${verseRef} (KJV)`,
     length: text.length,
     id: Math.floor(Math.random() * 100000),
     language: "english",
